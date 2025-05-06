@@ -72,6 +72,31 @@ public class ResultService {
         }
         return results;
     }
+    
+    // Get Results by Student ID
+    public List<Result> getResultsByStudentId(int studentId) {
+        List<Result> results = new ArrayList<>();
+        String query = "SELECT * FROM results_view WHERE student_id = ?";
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, studentId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Result result = new Result();
+                result.setResult_id(rs.getInt("result_id"));
+                result.setStudent_id(rs.getInt("student_id"));
+                result.setExam_id(rs.getInt("exam_id"));
+                result.setMarks_obtained(rs.getInt("marks_obtained"));
+                result.setGrade(rs.getString("grade"));
+                result.setStudent_name(rs.getString("student_name"));
+                result.setExam_title(rs.getString("exam_title"));
+                results.add(result);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
 
     // Update Result
     public boolean updateResult(Result result) {

@@ -75,6 +75,33 @@ public class EnrollmentService {
         }
         return enrollments;
     }
+    
+    // Get Enrollments by Student ID
+    public List<Enrollment> getEnrollmentsByStudentId(int studentId) {
+        List<Enrollment> enrollments = new ArrayList<>();
+        String query = "SELECT * FROM enrollments_view WHERE student_id = ? ORDER BY enrollment_id";
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, studentId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Enrollment enrollment = new Enrollment();
+                enrollment.setEnrollment_id(rs.getInt("enrollment_id"));
+                enrollment.setStudent_id(rs.getInt("student_id"));
+                enrollment.setExam_id(rs.getInt("exam_id"));
+                enrollment.setSeat_number(rs.getString("seat_number"));
+                enrollment.setStudent_name(rs.getString("student_name"));
+                enrollment.setExam_title(rs.getString("exam_title"));
+                enrollment.setSubject(rs.getString("subject"));
+                enrollment.setExam_date(rs.getString("exam_date"));
+                enrollment.setClass_room(rs.getString("class_room"));
+                enrollments.add(enrollment);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return enrollments;
+    }
 
     // Update Enrollment
     public boolean updateEnrollment(Enrollment enrollment) {
